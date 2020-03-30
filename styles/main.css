@@ -1,0 +1,220 @@
+@import url('fonts.css');
+
+body{
+    font-family: 'Raleway', sans-serif;
+    background-color: rgb(50, 50, 50);
+}
+
+h1, h2, h3, h4{
+    padding: 0;
+    margin: 0;
+}
+
+a{
+    text-decoration: none;
+}
+
+div#top-bar{
+    background-color: rgb(50, 50, 50);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+ul#top-nav{
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+li.top-nav-item{
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    margin: 0;
+    border-right: 1px solid rgb(100, 100, 100);
+}
+
+li.top-nav-item:first-of-type{
+    border-left: 1px solid rgb(100, 100, 100);
+}
+
+a.top-nav-link{
+    display: flex;
+    width: 70px;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    color: rgb(255, 255, 255);
+}
+
+a.top-nav-link:hover{
+    background-color: rgb(25,160,190);
+}
+
+div#header-picture-container{
+    display: flex;
+    height: 400px;
+    background-image: url("../pictures/header.jpg");
+    background-size: cover;
+    background-position: -50px 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.white{
+    color: rgb(255, 255, 255);
+}
+
+h1#name{
+    font-size: 5em;
+    font-weight: bold;
+}
+
+h2#profession{
+    font-size: 2em;
+}
+
+h3#title{
+    font-size: 1.2em;
+    padding-top: 10px;
+}
+
+.uppercase{
+    text-transform: uppercase;
+}
+
+.gray{
+    color: rgb(100, 100, 100);
+}
+
+a.gray:hover{
+    color: rgb(100, 100, 100);
+}
+
+.cyan{
+    color: rgb(25,160,190);
+}
+
+a.cyan:hover{
+    color: #1EAEDB;
+}
+
+.bigger{
+    font-size: 1.2em;
+}
+
+.bolder{
+    font-weight: 400;
+}
+
+.bold{
+    font-weight: 600;
+}
+
+.thinner{
+    font-weight: 200;
+}
+
+.right{
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.left{
+    text-align: left;
+}
+
+.justify{
+    text-align: justify;
+}
+
+div.anchor{
+    transform: translateY(-70px);
+}
+
+div.content-element{
+    background-color: rgb(255, 255, 255);
+    padding-top: 20px;
+}
+
+div.section-title-container{
+    border-bottom: 1px solid rgb(0,0,0);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+div#about-me-heinz-quote{
+    font-style: italic;
+    font-size: 1.5em;
+    color: rgb(200, 200, 200);
+    padding: 10px 0;
+}
+
+a.download:hover, a.imprint-link:hover{
+    text-decoration: underline;
+}
+
+h4.education-institute, h4.workplace-name, h4.skill-level{
+    font-weight: 400;
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+div#skills-container{
+    padding-bottom: 20px;
+}
+
+div#contact-container{
+    background-color:rgb(50, 50, 50);
+    padding:20px 0;
+}
+
+div#contact-container .section-title-container{
+    border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+div#contact-container .row{
+    margin-bottom: 10;
+}
+
+input[type="submit"].button-primary{
+    background-color: rgb(25,160,190);
+    border-color: rgb(25,160,190);
+}
+
+a.social-media-link{
+    font-size: 3em;
+}
+
+div#copyright-container .container{
+    border-top: 1px solid rgb(200, 200, 200);
+    padding: 40px 0;
+}
+
+div#copyright-notice-container, div#rights-reserved-container, div#imprint-link-container{
+    text-align: center;
+}
+
+@media (min-width: 550px){
+
+    div.section-content-container{
+        margin-bottom: 40px;
+    }
+    
+}
+
+@media (min-width: 1200px){
+
+    div#header-picture-container{
+        height: 600px;
+    }
+    
+}
