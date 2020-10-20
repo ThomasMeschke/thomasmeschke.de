@@ -158,7 +158,7 @@ div#about-me-heinz-quote{
     padding: 10px 0;
 }
 
-a.download:hover, a.imprint-link:hover{
+a.download:hover, a.impressum-link:hover{
     text-decoration: underline;
 }
 
@@ -199,7 +199,7 @@ div#copyright-container .container{
     padding: 40px 0;
 }
 
-div#copyright-notice-container, div#rights-reserved-container, div#imprint-link-container{
+div#copyright-notice-container, div#rights-reserved-container, div#impressum-link-container{
     text-align: center;
 }
 
