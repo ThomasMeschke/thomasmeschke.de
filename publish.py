@@ -7,6 +7,7 @@ import ftplib
 import os
 import sys
 import traceback
+import requests
 
 USE_SFTP = False
 FTP_LIVE_DIR = ''
@@ -15,25 +16,33 @@ FTP_HOST = 'ftp.thomasmeschke.de'
 FTP_PORT = 21
 FTP_USER = 'f012a02e'
 FTP_PASSWORD = 'pBk38S4v8Nbfbz35'
+
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+LIVE_ADDRESS = "https://thomasmeschke.de/"
+DEV_ADDRESS = "https://dev.thomasmeschke.de/"
 
 
 class FtpSessionBase:
     def __init__(self, ftp_handle):
         if type(self) is FtpSessionBase:
-            raise Exception('FtpSessionBase class cannot be instantiated directly')
+            raise NotImplementedError('FtpSessionBase class cannot be instantiated directly')
         self.ftp_handle = ftp_handle
     
     def change_dir(self, directory_name) -> None: 
+        # overwriten in the child classes
         pass
 
     def make_dir(self, directory_name) -> None: 
+        # overwriten in the child classes
         pass
 
     def put_file(self, local_file: str, remote_file: str, callback=None, confirm_size=True) -> None:
+        # overwriten in the child classes
         pass
 
     def close(self) -> None:
+        # overwriten in the child classes
         pass
 
 
@@ -74,20 +83,18 @@ class SftpSession(FtpSessionBase):
 
 
 class FtpSessionBuilder(object):
-    def __init__(self):
-        pass
     
-    def buildSession(self, host: str, port: int, username: str, password: str) -> FtpSessionBase:
+    def build_session(self, host: str, port: int, username: str, password: str) -> FtpSessionBase:
         if USE_SFTP: 
-            return self.buildSftpSession(host, port, username, password)
+            return self.build_sftp_session(host, port, username, password)
         else:
-            return self.buildFtpSession(host, username, password)
+            return self.build_ftp_session(host, username, password)
 
-    def buildFtpSession(self, host: str, username: str, password: str) -> FtpSession:
+    def build_ftp_session(self, host: str, username: str, password: str) -> FtpSession:
         ftp = ftplib.FTP(host, username, password)
         return FtpSession(ftp)
 
-    def buildSftpSession(self, host: str, port: int, username: str, password: str) -> SftpSession:
+    def build_sftp_session(self, host: str, port: int, username: str, password: str) -> SftpSession:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         ssh.connect(host, port, username, password, banner_timeout=200)
@@ -100,15 +107,16 @@ def main() -> None:
     environment = get_env_from_args(args)
     force_flag = get_force_flag_from_args(args)
     print(f"=== Starting '{environment}' release ===")
+    try_download_pudate_file(environment)
     last_pubdate_timestamp = determine_last_pubdate_timestamp(environment, force_flag)
     update_pubdate_file(environment)
-    file_list = collect_files_modified_after(last_pubdate_timestamp)
+    file_list = collect_files_modified_after(last_pubdate_timestamp, environment)
 
     try:
-        ftpSession = FtpSessionBuilder().buildSession(FTP_HOST, FTP_PORT, FTP_USER, FTP_PASSWORD)
+        ftp_session = FtpSessionBuilder().build_session(FTP_HOST, FTP_PORT, FTP_USER, FTP_PASSWORD)
         base_dir = get_remote_base_dir_for(environment)
-        publish_files_to(file_list, base_dir, ftpSession)
-        ftpSession.close()
+        publish_files_to(file_list, base_dir, ftp_session)
+        ftp_session.close()
         print("=== DONE ===")
     except Exception: 
         print(traceback.format_exc())
@@ -132,9 +140,23 @@ def get_force_flag_from_args(args) -> bool:
     return args.force
 
 
+def try_download_pudate_file(environment: str) -> None:
+    file_name = 'pubdate_' + environment + '.inf'
+    base_url = LIVE_ADDRESS if (environment == 'live') else DEV_ADDRESS
+    file_url = base_url + file_name
+    print("-> Try downloading '" + file_url + "'...")
+    try:
+        response = requests.get(file_url)
+        pubdate_file = open(file_name, 'wb')
+        pubdate_file.write(response.content)
+        pubdate_file.close()
+    except Exception:
+        print("W: Could not download pubdate file!")
+
+
 def determine_last_pubdate_timestamp(environment: str, force: bool) -> float:
     if force:
-        print("Force flag was set, ignoring last pubdate")
+        print("W: Force flag was set, ignoring last pubdate!")
         return 0
     else: 
         return get_last_pubdate_from_pubdate_file(environment)
@@ -148,7 +170,7 @@ def get_last_pubdate_from_pubdate_file(environment: str) -> float:
         time_struct = convert_time_string_to_struct_time(time_string)
         timestamp = convert_struct_time_to_timestamp(time_struct)
     except Exception:
-        print(f"Could not read from pubdate info file, all files will be published")
+        print(f"W: Could not read from pubdate info file, all files will be published!")
     return timestamp
 
 
@@ -166,9 +188,11 @@ def update_pubdate_file(environment: str) -> None:
     pubdate_file.close()
 
 
-def collect_files_modified_after(timestamp: float) -> List[str]:
+def collect_files_modified_after(timestamp: float, environment: str) -> List[str]:
     root_dir = expand_current_folder_to_absolut_path()
     blocklist = ['.git', '.gitignore', '.idea', '.vscode', 'publish.py', 'README.md']
+    other_env = 'dev' if (environment == 'live') else 'live'
+    blocklist.append('pubdate_' + other_env + '.inf')
     files_to_publish = []
     for subdir, _, files in os.walk(root_dir):
         for file in files:
