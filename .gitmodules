@@ -1,0 +1,3 @@
+[submodule "vendor/publish.py"]
+	path = vendor/publish.py
+	url = git@bitbucket.org:thomasmeschke/publish.py.git
