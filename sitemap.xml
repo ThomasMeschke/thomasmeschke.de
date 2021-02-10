@@ -12,16 +12,16 @@
   <changefreq>monthly</changefreq>
 </url>
 <url>
-  <loc>https://thomasmeschke.de/documents/Resume_Thomas_Meschke.pdf</loc>
-  <changefreq>monthly</changefreq>
+  <loc>https://thomasmeschke.de/documents/Certificate_LMI.pdf</loc>
+  <changefreq>never</changefreq>
 </url>
 <url>
   <loc>https://thomasmeschke.de/documents/Certificate_University.pdf</loc>
-  <changefreq>monthly</changefreq>
+  <changefreq>never</changefreq>
 </url>
 <url>
   <loc>https://thomasmeschke.de/documents/Certificate_TecWare.pdf</loc>
-  <changefreq>monthly</changefreq>
+  <changefreq>never</changefreq>
 </url>
 <url>
   <loc>https://thomasmeschke.de/impressum.html</loc>
